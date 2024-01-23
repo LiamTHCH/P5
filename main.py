@@ -12,7 +12,7 @@ class Printer:
         return self.status
 
     def set_status(self, new_status):
-        valid_statuses = ["idle", "printing", "error"]
+        valid_statuses = ["idle", "printing", "error","wating_grabber"]
         if new_status.lower() in valid_statuses:
             self.status = new_status.lower()
         else:
@@ -30,7 +30,7 @@ class Printer:
     def set_position(self, new_position):
         self.position = new_position
 
-        
+
 
 class Grabber:
     def __init__(self, grabber_id, ip_address):
