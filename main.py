@@ -3,10 +3,11 @@ from flask import Flask, jsonify, request
 
 
 class Printer:
-    def __init__(self, printer_id):
+    def __init__(self, printer_id,ip_address,position):
         self.printer_id = printer_id
         self.status = "idle"
         self.ip_address = ip_address
+        self.position = (0, 0)  # Initial position as a tuple (x, y)
     def get_status(self):
         return self.status
 
@@ -22,6 +23,14 @@ class Printer:
 
     def set_ip_address(self, new_ip_address):
         self.ip_address = new_ip_address
+
+    def get_position(self):
+        return self.position
+
+    def set_position(self, new_position):
+        self.position = new_position
+
+        
 
 class Grabber:
     def __init__(self, grabber_id, ip_address):
