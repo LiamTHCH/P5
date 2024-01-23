@@ -1,12 +1,4 @@
-from flask import Flask
-
-app = Flask(__name__)
-
-@app.route('/')
-def index():
-    return 'Web App with Python Flask!'
-
-app.run(host='0.0.0.0', port=81)
+from flask import Flask, jsonify, request
 
 
 
@@ -52,3 +44,63 @@ class Grabber:
 
     def set_ip_address(self, new_ip_address):
         self.ip_address = new_ip_address
+
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return 'Web App with Python Flask!'
+
+
+
+
+grabbers = {
+    1: Grabber(1, "192.168.1.1"),
+    # Add more grabbers as needed
+}
+
+@app.route('/grabber/<int:grabber_id>/status', methods=['GET'])
+def get_grabber_status(grabber_id):
+    if grabber_id in grabbers:
+        grabber = grabbers[grabber_id]
+        return jsonify(status=grabber.get_status())
+    else:
+        return jsonify(message="Grabber not found."), 404
+
+# Endpoint to set grabber status
+@app.route('/grabber/<int:grabber_id>/status', methods=['POST'])
+def set_grabber_status(grabber_id):
+    if grabber_id in grabbers:
+        grabber = grabbers[grabber_id]
+        data = request.get_json()
+        new_status = data.get('status')
+        response = grabber.set_status(new_status)
+        return jsonify(message=response)
+    else:
+        return jsonify(message="Grabber not found."), 404
+
+# Endpoint to get grabber IP address
+@app.route('/grabber/<int:grabber_id>/ip', methods=['GET'])
+def get_grabber_ip(grabber_id):
+    if grabber_id in grabbers:
+        grabber = grabbers[grabber_id]
+        return jsonify(ip_address=grabber.get_ip_address())
+    else:
+        return jsonify(message="Grabber not found."), 404
+
+# Endpoint to set grabber IP address
+@app.route('/grabber/<int:grabber_id>/ip', methods=['POST'])
+def set_grabber_ip(grabber_id):
+    if grabber_id in grabbers:
+        grabber = grabbers[grabber_id]
+        data = request.get_json()
+        new_ip_address = data.get('ip_address')
+        response = grabber.set_ip_address(new_ip_address)
+        return jsonify(message=response)
+    else:
+        return jsonify(message="Grabber not found."), 404
+
+
+
+app.run(host='0.0.0.0', port=81)
