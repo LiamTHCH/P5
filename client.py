@@ -1,7 +1,7 @@
 import requests
 
 # Replace this with the appropriate base URL for your Flask API
-BASE_URL = "http://127.0.0.1:81"
+BASE_URL = "http://127.0.0.1:81/api"
 
 # Function to print response content in a formatted way
 def print_response(response):
@@ -24,11 +24,29 @@ print("Set Grabber Status:")
 print_response(response)
 
 
+
 response = requests.get(f"{BASE_URL}/grabber/1/status")
 print("New Grabber Status:")
+print_response(response)
+
+
+
+
+data = {"status": "wating_grabber"}
+response = requests.post(f"{BASE_URL}/printers/1/status", json=data)
+print("Set Printer Status:")
+print_response(response)
+
+
+response = requests.get(f"{BASE_URL}/printers/1/status")
+print("New Printer Status:")
 print_response(response)
 
 # Get grabber IP address
 response = requests.get(f"{BASE_URL}/grabber/1/ip")
 print("Get Grabber IP:")
+print_response(response)
+
+response = requests.get(f"{BASE_URL}/grabber/job")
+print("Grabber Job:")
 print_response(response)

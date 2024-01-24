@@ -55,6 +55,10 @@ class Grabber:
         self.ip_address = new_ip_address
 
 
+
+
+
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -66,6 +70,45 @@ grabbers = {
     1: Grabber(1, "192.168.1.1"),
     # Add more grabbers as needed
 }
+
+printers = {
+    1: Printer(1, "192.168.1.1",(1,1)),
+}
+
+
+###### APP route for the printer
+
+@app.route('/api/printers/<int:printer_id>/status', methods=['GET'])
+def get_printer_status(printer_id):
+    if printer_id in printers:
+        printer = printers[printer_id]
+        return jsonify(status=printer.get_status())
+    else:
+        return jsonify(message="Printer not found."), 404
+
+# Endpoint to set the status of a specific printer
+@app.route('/api/printers/<int:printer_id>/status', methods=['POST'])
+def set_printer_status(printer_id):
+    if printer_id in printers:
+        printer = printers[printer_id]
+        data = request.get_json()
+        new_status = data.get('status')
+        response = printer.set_status(new_status)
+        return jsonify(message=response)
+    else:
+        return jsonify(message="Printer not found."), 404
+
+
+
+@app.route('/api/printers/<int:printer_id>/position', methods=['GET'])
+def get_printer_position(printer_id):
+    if printer_id in printers:
+        printer = printers[printer_id]
+        return jsonify(position=printer.get_position())
+    else:
+        return jsonify(message="Printer not found."), 40
+
+###### APP route for the Grabber
 
 @app.route('/api/grabber/<int:grabber_id>/status', methods=['GET'])
 def get_grabber_status(grabber_id):
@@ -107,6 +150,15 @@ def set_grabber_ip(grabber_id):
         return jsonify(message=response)
     else:
         return jsonify(message="Grabber not found."), 404
+    
+@app.route('/api/grabber/job', methods=['GET'])
+def get_printers_with_wating_status():
+    waiting_printers = {
+        printer_id: {"status": printer_info.get_status()}
+        for printer_id, printer_info in printers.items()
+        if printer_info.get_status() == "wating_grabber"
+    }
+    return jsonify(waiting_printers)
 
 
 
