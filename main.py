@@ -7,7 +7,7 @@ class Printer:
         self.printer_id = printer_id
         self.status = "idle"
         self.ip_address = ip_address
-        self.position = (0, 0)  # Initial position as a tuple (x, y)
+        self.position = position  # Initial position as a tuple (x, y)
     def get_status(self):
         return self.status
 
@@ -106,7 +106,7 @@ def get_printer_position(printer_id):
         printer = printers[printer_id]
         return jsonify(position=printer.get_position())
     else:
-        return jsonify(message="Printer not found."), 40
+        return jsonify(message="Printer not found."), 404
 
 ###### APP route for the Grabber
 
@@ -139,22 +139,15 @@ def get_grabber_ip(grabber_id):
     else:
         return jsonify(message="Grabber not found."), 404
 
-# Endpoint to set grabber IP address
-@app.route('/api/grabber/<int:grabber_id>/ip', methods=['POST'])
-def set_grabber_ip(grabber_id):
-    if grabber_id in grabbers:
-        grabber = grabbers[grabber_id]
-        data = request.get_json()
-        new_ip_address = data.get('ip_address')
-        response = grabber.set_ip_address(new_ip_address)
-        return jsonify(message=response)
-    else:
-        return jsonify(message="Grabber not found."), 404
+
     
+
+
+
 @app.route('/api/grabber/job', methods=['GET'])
 def get_printers_with_wating_status():
     waiting_printers = {
-        printer_id: {"status": printer_info.get_status()}
+        printer_id: {"status": printer_info.get_status(),"position":printer_info.get_position()}
         for printer_id, printer_info in printers.items()
         if printer_info.get_status() == "wating_grabber"
     }
