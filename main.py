@@ -62,14 +62,12 @@ def index():
     return 'Web App with Python Flask!'
 
 
-
-
 grabbers = {
     1: Grabber(1, "192.168.1.1"),
     # Add more grabbers as needed
 }
 
-@app.route('/grabber/<int:grabber_id>/status', methods=['GET'])
+@app.route('/api/grabber/<int:grabber_id>/status', methods=['GET'])
 def get_grabber_status(grabber_id):
     if grabber_id in grabbers:
         grabber = grabbers[grabber_id]
@@ -78,7 +76,7 @@ def get_grabber_status(grabber_id):
         return jsonify(message="Grabber not found."), 404
 
 # Endpoint to set grabber status
-@app.route('/grabber/<int:grabber_id>/status', methods=['POST'])
+@app.route('/api/grabber/<int:grabber_id>/status', methods=['POST'])
 def set_grabber_status(grabber_id):
     if grabber_id in grabbers:
         grabber = grabbers[grabber_id]
@@ -90,7 +88,7 @@ def set_grabber_status(grabber_id):
         return jsonify(message="Grabber not found."), 404
 
 # Endpoint to get grabber IP address
-@app.route('/grabber/<int:grabber_id>/ip', methods=['GET'])
+@app.route('/api/grabber/<int:grabber_id>/ip', methods=['GET'])
 def get_grabber_ip(grabber_id):
     if grabber_id in grabbers:
         grabber = grabbers[grabber_id]
@@ -99,7 +97,7 @@ def get_grabber_ip(grabber_id):
         return jsonify(message="Grabber not found."), 404
 
 # Endpoint to set grabber IP address
-@app.route('/grabber/<int:grabber_id>/ip', methods=['POST'])
+@app.route('/api/grabber/<int:grabber_id>/ip', methods=['POST'])
 def set_grabber_ip(grabber_id):
     if grabber_id in grabbers:
         grabber = grabbers[grabber_id]
