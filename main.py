@@ -144,7 +144,7 @@ def get_grabber_ip(grabber_id):
 
     
 
-
+# Endpoint for grabber to get the jobs
 
 @app.route('/api/grabber/job', methods=['GET'])
 def get_printers_with_wating_status():
