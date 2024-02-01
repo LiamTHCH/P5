@@ -22,7 +22,7 @@ class PrinterGUI:
         self.status_var.set("idle")
 
         # Create a selection box for setting the status
-        self.status_options = ["idle", "printing", "error", "waiting_grabber"]
+        self.status_options = ["idle", "printing", "error", "wating_grabber"]
         self.status_option_menu = tk.OptionMenu(master, self.status_var, *self.status_options)
         self.status_option_menu.grid(row=1, column=1, padx=5, pady=5)
 

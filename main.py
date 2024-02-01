@@ -127,7 +127,7 @@ def set_grabber_status(grabber_id):
         data = request.get_json()
         new_status = data.get('status')
         response = grabber.set_status(new_status)
-        print("Grabber %s has new status : %s"%(printer_id,new_status))
+        print("Grabber %s has new status : %s"%(grabber_id,new_status))
         return jsonify(message=response)
     else:
         return jsonify(message="Grabber not found."), 404
