@@ -62,6 +62,7 @@ def monitor_printers():
 
     for printer_id, printer in printers.items():
         if not ping_printer(printer.ip_address):
+            print("Printer %s Time OUT , set to error"%(grabber_id))
             printer.set_status("error")
 
 def ping_printer(ip_address):
@@ -77,6 +78,7 @@ def monitor_grabbers():
 
     for grabber_id, grabber in grabbers.items():
         if not ping_grabber(grabber.ip_address):
+            print("Grabber %s Time OUT , set to error"%(grabber_id))
             grabber.set_status("error")
 
 def ping_grabber(ip_address):
