@@ -31,6 +31,9 @@ class grabberGUI:
 
         self.set_status_button = tk.Button(master, text="Set New Status", command=self.set_status)
         self.set_status_button.grid(row=1, column=2, columnspan=2, pady=5)
+        
+        self.get_job_button = tk.Button(master, text="Get Job", command=self.get_job)
+        self.get_job_button.grid(row=3, column=0, columnspan=2, pady=5)
 
 
 
@@ -61,7 +64,23 @@ class grabberGUI:
         except Exception as e:
             messagebox.showerror("Error", f"Error: {str(e)}")
 
-   
+    def get_job(self):
+        try:
+            # Perform a GET request to get the job
+            response = requests.get(f"{BASE_URL}/grabber/job")
+            response_data = response.json()
+
+            # Check if the response contains any job information
+            if response_data:
+                for printer_id, job_info in response_data.items():
+                    position = job_info.get("position")
+                    status = job_info.get("status")
+                    messagebox.showinfo("Job Info", f"Printer ID: {printer_id}\nPosition: {position}\nStatus: {status}")
+            else:
+                messagebox.showinfo("Job Info", "No job information available")
+        except Exception as e:
+            messagebox.showerror("Error", f"Error: {str(e)}")
+
 
 if __name__ == '__main__':
     root = tk.Tk()
