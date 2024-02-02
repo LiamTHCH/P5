@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
-
-
+import subprocess
+import threading
+PING_TIMEOUT = 2
 
 class Printer:
     def __init__(self, printer_id,ip_address,position):
@@ -56,6 +57,34 @@ class Grabber:
 
 
 
+def monitor_printers():
+    threading.Timer(10.0, monitor_printers).start()  # Monitor every 10 seconds
+
+    for printer_id, printer in printers.items():
+        if not ping_printer(printer.ip_address):
+            printer.set_status("error")
+
+def ping_printer(ip_address):
+    try:
+        subprocess.run(["ping", "-c", "1", "-W", str(PING_TIMEOUT), ip_address], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        return True  # If ping is successful
+    except subprocess.CalledProcessError:
+        return False  # If ping fails
+    
+
+def monitor_grabbers():
+    threading.Timer(10.0, monitor_grabbers).start()  # Monitor every 10 seconds
+
+    for grabber_id, grabber in grabbers.items():
+        if not ping_grabber(grabber.ip_address):
+            grabber.set_status("error")
+
+def ping_grabber(ip_address):
+    try:
+        subprocess.run(["ping", "-c", "1", "-W", str(PING_TIMEOUT), ip_address], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        return True  # If ping is successful
+    except subprocess.CalledProcessError:
+        return False  # If ping fails
 
 
 
@@ -156,5 +185,7 @@ def get_printers_with_wating_status():
     return jsonify(waiting_printers)
 
 
-
-app.run(host='0.0.0.0', port=81)
+if __name__ == '__main__':
+    monitor_printers()
+    monitor_grabbers()
+    app.run(host='0.0.0.0', port=81)
