@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-import subprocess
+from pythonping import ping
 import threading
 PING_TIMEOUT = 2
 
@@ -62,15 +62,16 @@ def monitor_printers():
 
     for printer_id, printer in printers.items():
         if not ping_printer(printer.ip_address):
-            print("Printer %s Time OUT , set to error"%(grabber_id))
+            print("Printer %s Time OUT , set to error"%(printer_id))
             printer.set_status("error")
 
 def ping_printer(ip_address):
     try:
-        subprocess.run(["ping", "-c", "1", "-W", str(PING_TIMEOUT), ip_address], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-        return True  # If ping is successful
-    except subprocess.CalledProcessError:
-        return False  # If ping fails
+        ping_result = ping(ip_address, count=1, timeout=PING_TIMEOUT)
+        return ping_result.success()
+    except Exception as e:
+        print("Error while pinging {}: {}".format(ip_address, str(e)))
+        return False
     
 
 def monitor_grabbers():
@@ -83,10 +84,11 @@ def monitor_grabbers():
 
 def ping_grabber(ip_address):
     try:
-        subprocess.run(["ping", "-c", "1", "-W", str(PING_TIMEOUT), ip_address], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-        return True  # If ping is successful
-    except subprocess.CalledProcessError:
-        return False  # If ping fails
+        ping_result = ping(ip_address, count=1, timeout=PING_TIMEOUT)
+        return ping_result.success()
+    except Exception as e:
+        print("Error while pinging {}: {}".format(ip_address, str(e)))
+        return False
 
 
 
@@ -98,12 +100,12 @@ def index():
 
 
 grabbers = {
-    1: Grabber(1, "192.168.1.1"),
+    1: Grabber(1, "192.168.178.1"),
     # Add more grabbers as needed
 }
 
 printers = {
-    1: Printer(1, "192.168.1.1",(1,1)),
+    1: Printer(1, "192.168.178.1",(1,1)),
 }
 
 
